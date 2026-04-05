@@ -21,8 +21,10 @@ public class SlotLockProviderImpl implements SlotLockProvider {
 
     @Override
     public void getSLotLock(String id, String lockedBy) throws SlotAlreadyLocked {
-        ReentrantLock lock = locks.getOrDefault(id, new ReentrantLock());
-        locks.put(id, lock);
+
+        ReentrantLock lock = new ReentrantLock();
+        locks.putIfAbsent(id, lock);
+        lock = locks.get(id);
         lock.lock();
         try{
             if(slotLocks.containsKey(id)){
