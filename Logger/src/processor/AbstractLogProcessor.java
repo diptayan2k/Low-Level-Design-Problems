@@ -32,10 +32,13 @@ public abstract class AbstractLogProcessor implements LogProcessor {
     @Override
     public void sendLogs(LogEvent event){
         //System.out.println("Inside  " + this.getClass().getName() + " " + event.toString());
-        for (Observer observer : observers){
-            observer.publish(event);
+        if(level.getPriority() <= event.getLevel().getPriority()){
+            for (Observer observer : observers){
+                observer.publish(event);
+            }
         }
-        if(nextLogProcessor!= null && level.getPriority() >= event.getLevel().getPriority()){
+
+        if(nextLogProcessor!= null){
             nextLogProcessor.sendLogs(event);
         }
     }

@@ -9,13 +9,15 @@ import processor.*;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
 
-        LogProcessor debugLogProcessor = new DebugLogProcessor(null, Level.DEBUG);
-        LogProcessor infoLogProcessor = new InfoLogProcessor(debugLogProcessor, Level.INFO);
-        LogProcessor warnLogProcessor = new WarnLogProcessor(infoLogProcessor, Level.WARN);
-        LogProcessor errorLogProcessor = new ErrorLogProcessor(warnLogProcessor, Level.ERROR);
-        LogProcessor fatalLogProcessor = new FatalLogProcessor(errorLogProcessor, Level.FATAL);
 
-        LogStrategy asyncLogStrategy = new AsyncLogStrategy(5, fatalLogProcessor);
+        LogProcessor fatalLogProcessor = new FatalLogProcessor(null, Level.FATAL);
+        LogProcessor errorLogProcessor = new ErrorLogProcessor(fatalLogProcessor, Level.ERROR);
+        LogProcessor warnLogProcessor = new WarnLogProcessor(errorLogProcessor, Level.WARN);
+        LogProcessor infoLogProcessor = new InfoLogProcessor(warnLogProcessor, Level.INFO);
+        LogProcessor debugLogProcessor = new DebugLogProcessor(infoLogProcessor, Level.DEBUG);
+
+
+        LogStrategy asyncLogStrategy = new AsyncLogStrategy(5, debugLogProcessor);
 
         Observer s3Observer = new S3Observer();
         Observer kafkaObserver = new KafkaObserver();
